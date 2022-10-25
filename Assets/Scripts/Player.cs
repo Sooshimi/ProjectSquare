@@ -5,16 +5,21 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    [Header("Player Settings")]
     [SerializeField] float moveSpeed = 10f;
     Vector2 rawInput;
 
+    [Header("Player movement restrictions")]
     [SerializeField] float paddingLeft;
     [SerializeField] float paddingRight;
     [SerializeField] float paddingTop;
     [SerializeField] float paddingBottom;
-
     Vector2 minBounds;
     Vector2 maxBounds;
+
+    [Header("Guns")]
+    [SerializeField] GameObject bullet;
+    [SerializeField] Transform gun; // gun position
     
     void Update()
     {
@@ -44,5 +49,10 @@ public class Player : MonoBehaviour
     void OnMove(InputValue value)
     {
         rawInput = value.Get<Vector2>();
+    }
+
+    void OnFire(InputValue value)
+    {
+        Instantiate(bullet, gun.position, transform.rotation);
     }
 }
