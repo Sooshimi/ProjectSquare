@@ -5,54 +5,58 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    Rigidbody2D rb;
+    Vector3 bulletDirection;
+    Vector3 cursorPos;
+    [SerializeField] float knockBackAmount = 200f;
+
     [Header("Player Settings")]
     [SerializeField] float moveSpeed = 10f;
-    Vector2 rawInput;
-
-    [Header("Player movement restrictions")]
-    [SerializeField] float paddingLeft;
-    [SerializeField] float paddingRight;
-    [SerializeField] float paddingTop;
-    [SerializeField] float paddingBottom;
-    Vector2 minBounds;
-    Vector2 maxBounds;
+    private Vector2 moveInput;
 
     [Header("Guns")]
     [SerializeField] GameObject bullet;
-    [SerializeField] Transform gun; // gun position
+    [SerializeField] Transform gun;
+    
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        bulletDirection.z = 0;
+    }
     
     void Update()
     {
+        cursorPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        bulletDirection = cursorPos - transform.position;
+        bulletDirection.Normalize();
+
         Move();
+        if (Input.GetKey("z"))
+        {
+            rb.velocity = -bulletDirection * knockBackAmount;
+        }
+        
     }
 
-    void InitBounds() // gets min and max bounds of camera viewport
+    public void Knockback(float value)
     {
-        Camera mainCamera = Camera.main;
-        minBounds = mainCamera.ViewportToWorldPoint(new Vector2(0,0));
-        maxBounds = mainCamera.ViewportToWorldPoint(new Vector2(1,1));
+        rb.AddForce(-bulletDirection * value);
     }
 
     void Move()
     {
-        Vector2 delta = rawInput * moveSpeed * Time.deltaTime;
-        Vector2 newPos = new Vector2();
-
-        // restrict player boundary to camera viewport
-        newPos.x = Mathf.Clamp(transform.position.x + delta.x, minBounds.x + paddingLeft, maxBounds.x - paddingRight);
-        newPos.y = Mathf.Clamp(transform.position.y + delta.y, minBounds.y + paddingBottom, maxBounds.y - paddingTop);
-        
-        //newPos = (Vector2)transform.position + delta; // no camera restriction
-        transform.position = newPos;
+        Vector2 playerVelocity = new Vector2(moveInput.x * moveSpeed, rb.velocity.y);
+        rb.velocity = playerVelocity;
     }
 
     void OnMove(InputValue value)
     {
-        rawInput = value.Get<Vector2>();
+        moveInput = value.Get<Vector2>();
     }
 
     void OnFire(InputValue value)
     {
         Instantiate(bullet, gun.position, transform.rotation);
+        Knockback(knockBackAmount);
     }
 }
