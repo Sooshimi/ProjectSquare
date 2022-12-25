@@ -27,6 +27,11 @@ public class Bullet : MonoBehaviour
         myRigidbody.velocity = bulletDirection * bulletSpeed;
     }
 
+    private void OnTriggerEnter2D(Collider2D other) 
+    {
+        Destroy(this.gameObject);
+    }
+
     IEnumerator destroyAfterTime()
     {
         yield return new WaitForSeconds(2f);

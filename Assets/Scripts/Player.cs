@@ -8,20 +8,20 @@ public class Player : MonoBehaviour
     Rigidbody2D rb;
     Vector3 bulletDirection;
     Vector3 cursorPos;
-    [SerializeField] float knockBackAmount = 200f;
-
-    [Header("Player Settings")]
-    [SerializeField] float moveSpeed = 10f;
-    private Vector2 moveInput;
+    Vector3 initial;
 
     [Header("Guns")]
     [SerializeField] GameObject bullet;
-    [SerializeField] Transform gun;
+    [SerializeField] Transform gunPoint;
+    [SerializeField] Weapon weapon;
     
     void Start()
     {
+        initial = transform.position;
+        
         rb = GetComponent<Rigidbody2D>();
         bulletDirection.z = 0;
+        weapon = FindObjectOfType<Weapon>();
     }
     
     void Update()
@@ -30,12 +30,10 @@ public class Player : MonoBehaviour
         bulletDirection = cursorPos - transform.position;
         bulletDirection.Normalize();
 
-        Move();
-        if (Input.GetKey("z"))
+        if (Input.GetKey("space"))
         {
-            rb.velocity = -bulletDirection * knockBackAmount;
+            transform.position = initial;
         }
-        
     }
 
     public void Knockback(float value)
@@ -43,20 +41,9 @@ public class Player : MonoBehaviour
         rb.AddForce(-bulletDirection * value);
     }
 
-    void Move()
-    {
-        Vector2 playerVelocity = new Vector2(moveInput.x * moveSpeed, rb.velocity.y);
-        rb.velocity = playerVelocity;
-    }
-
-    void OnMove(InputValue value)
-    {
-        moveInput = value.Get<Vector2>();
-    }
-
     void OnFire(InputValue value)
     {
-        Instantiate(bullet, gun.position, transform.rotation);
-        Knockback(knockBackAmount);
+        Instantiate(bullet, gunPoint.position, transform.rotation);
+        weapon.Shoot();
     }
 }

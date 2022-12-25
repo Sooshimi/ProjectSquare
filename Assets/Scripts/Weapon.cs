@@ -4,11 +4,16 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    // [SerializeField] private float knockBackAmount = 5f;
-    // [SerializeField] private Player player;
+    [SerializeField] private float knockBackAmount = 150f;
+    [SerializeField] private Player player;
 
-    // public void Shoot()
-    // {
-    //     player.Knockback(knockBackAmount);
-    // }
+    void Start()
+    {
+        player = FindObjectOfType<Player>();
+    }
+
+    public void Shoot()
+    {
+        player.Knockback(knockBackAmount);
+    }
 }

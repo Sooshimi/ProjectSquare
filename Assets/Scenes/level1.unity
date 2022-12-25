@@ -600,6 +600,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b7652407c7777c4ba25b25d252500a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  knockBackAmount: 150
+  player: {fileID: 0}
 --- !u!1 &1824632182
 GameObject:
   m_ObjectHideFlags: 0
@@ -633,10 +635,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b93e560ea2eb12146bf9025f5c10c55d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  knockBackAmount: 10
-  moveSpeed: 10
   bullet: {fileID: 6923466358820220307, guid: 43a9d6178e04fd14c907a986b689ee2c, type: 3}
-  gun: {fileID: 1746671842}
+  gunPoint: {fileID: 1746671842}
+  weapon: {fileID: 1746671845}
 --- !u!61 &1824632184
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -676,7 +677,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 0.1
-  m_LinearDrag: 0
+  m_LinearDrag: 1.5
   m_AngularDrag: 0.05
   m_GravityScale: 2
   m_Material: {fileID: 0}
